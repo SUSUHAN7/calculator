@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>반응형 계산기</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        display: flex;
+        justify-content: center;
+        padding: 20px;
+      }
+
+      .calculator {
+        display: none;
+        grid-template-columns: repeat(4, 60px);
+        gap: 5px;
+        padding: 10px;
+        border: 2px solid #ccc;
+        border-radius: 10px;
+        background: #f5f5f5;
+      }
+
+      .calculator input {
+        grid-column: span 4;
+        height: 40px;
+        font-size: 1.2em;
+        text-align: right;
+        padding-right: 10px;
+      }
+
+      .calculator button {
+        height: 40px;
+        font-size: 1em;
+        border: none;
+        border-radius: 5px;
+        background-color: #ffd700;
+        cursor: pointer;
+      }
+
+      .calculator button.gray {
+        background-color: #ddd;
+      }
+
+      @media (max-width: 600px) {
+        .calc-small {
+          display: grid;
+        }
+      }
+
+      @media (min-width: 601px) {
+        .calc-large {
+          display: grid;
+          grid-template-columns: repeat(6, 60px);
+        }
+        .calc-large input {
+          grid-column: span 6;
+        }
+      }
+    </style>
+    <script>
+      let currentInput = "";
+      let operator = "";
+      let previousValue = "";
+
+      function updateDisplay(value) {
+        document.querySelectorAll("input[type='text']").forEach(input => input.value = value);
+      }
+
+      function numberButton(num) {
+        currentInput += num;
+        updateDisplay(currentInput);
+      }
+
+      function clearDisplay() {
+        currentInput = "";
+        operator = "";
+        previousValue = "";
+        updateDisplay("0");
+      }
+
+      function setOperator(op) {
+        if (currentInput === "") return;
+        operator = op;
+        previousValue = currentInput;
+        currentInput = "";
+      }
+
+      function calculate() {
+        let result = 0;
+        const prev = parseFloat(previousValue);
+        const curr = parseFloat(currentInput);
+        if (isNaN(prev) || isNaN(curr)) return;
+
+        switch (operator) {
+          case "+": result = prev + curr; break;
+          case "-": result = prev - curr; break;
+          case "×": result = prev * curr; break;
+          case "÷": result = curr !== 0 ? prev / curr : "Error"; break;
+          default: return;
+        }
+
+        updateDisplay(result);
+        currentInput = result.toString();
+        operator = "";
+        previousValue = "";
+      }
+    </script>
+  </head>
+  <body>
+
+    <div class="calculator calc-small">
+      <input type="text" readonly value="0">
+      <button class="gray" onclick="clearDisplay()">CE</button><button class="gray">√x</button><button class="gray">%</button><button onclick="setOperator('÷')">÷</button>
+      <button class="num" onclick="numberButton('7')">7</button><button class="num" onclick="numberButton('8')">8</button><button class="num" onclick="numberButton('9')">9</button><button onclick="setOperator('×')">×</button>
+      <button class="num" onclick="numberButton('4')">4</button><button class="num" onclick="numberButton('5')">5</button><button class="num" onclick="numberButton('6')">6</button><button onclick="setOperator('-')">-</button>
+      <button class="num" onclick="numberButton('1')">1</button><button class="num" onclick="numberButton('2')">2</button><button class="num" onclick="numberButton('3')">3</button><button onclick="setOperator('+')">+</button>
+      <button class="num" onclick="numberButton('0')">0</button><button onclick="numberButton('.')">.</button><button>+/-</button><button onclick="calculate()">=</button>
+      <button class="gray">π</button><button class="gray">x²</button><button class="gray">R2</button><button class="gray">R0</button>
+    </div>
+
+    <div class="calculator calc-large">
+      <input type="text" readonly value="0">
+      <button class="num" onclick="numberButton('7')">7</button><button class="num" onclick="numberButton('8')">8</button><button class="num" onclick="numberButton('9')">9</button><button onclick="setOperator('÷')">÷</button><button class="gray">R2</button><button class="gray">R0</button>
+      <button class="num" onclick="numberButton('4')">4</button><button class="num" onclick="numberButton('5')">5</button><button class="num" onclick="numberButton('6')">6</button><button onclick="setOperator('×')">×</button><button class="gray">π</button><button class="gray">x²</button>
+      <button class="num" onclick="numberButton('1')">1</button><button class="num" onclick="numberButton('2')">2</button><button class="num" onclick="numberButton('3')">3</button><button onclick="setOperator('-')">-</button><button class="gray">√x</button><button class="gray">%</button>
+      <button class="num" onclick="numberButton('0')">0</button><button onclick="numberButton('.')">.</button><button>+/-</button><button onclick="setOperator('+')">+</button><button class="gray" onclick="clearDisplay()">CE</button><button onclick="calculate()">=</button>
+    </div>
+  </body>
+</html>
